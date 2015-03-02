@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/details_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/photos_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/details_image_height"/>
+
+        <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/photos_pager_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/pager_indicator_height"/>
+
+        <include
+            android:id="@+id/block_name"
+            layout="@layout/block_name"/>
+        <include
+            android:id="@+id/block_rating"
+            layout="@layout/block_rating"/>
+        <include
+            android:id="@+id/block_address"
+            layout="@layout/block_address"/>
+        <include
+            android:id="@+id/block_phone"
+            layout="@layout/block_phone"/>
+        <include
+            android:id="@+id/block_website"
+            layout="@layout/block_website"/>
+        <include
+            android:id="@+id/block_more"
+            layout="@layout/block_more"/>
+    </LinearLayout>
+
+</ScrollView>

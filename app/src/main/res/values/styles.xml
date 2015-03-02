@@ -1,0 +1,31 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--   main color -->
+        <item name="colorPrimary">@color/primary</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="colorAccent">@color/accent</item>
+        <!--   buttons -->
+        <item name="colorButtonNormal">@android:color/white</item>
+    </style>
+
+    <style name="TitleTextView" parent="android:Widget.TextView">
+        <item name="android:padding">@dimen/padding_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+    </style>
+
+    <style name="DefaultTextView" parent="android:Widget.TextView">
+        <item name="android:padding">@dimen/padding_size</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+    </style>
+
+    <style name="VerticalPadding" parent="android:Widget.TextView">
+        <item name="android:paddingTop">@dimen/padding_size</item>
+        <item name="android:paddingBottom">@dimen/padding_size</item>
+    </style>
+
+</resources>

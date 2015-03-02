@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PlacesShowcase</string>
+    <string name="about">About App</string>
+    <string name="action_about">About</string>
+    <string name="action_nearby">Nearby</string>
+    <string name="action_search">Search</string>
+    <string name="bad_response">Oops :\u0020</string>
+    <string name="error_invalid_response">Invalid server response</string>
+    <string name="loading">Loading...</string>
+    <string name="location_not_available">Location not available now</string>
+    <string name="place_details">Place details</string>
+    <string name="request_error">Something went wrong, please try again</string>
+    <string name="search_hint">What are you looking for?</string>
+
+    <string name="title_address">Address</string>
+    <string name="title_name">Name</string>
+    <string name="title_rating">Rating</string>
+    <string name="title_phone_number">Phone number</string>
+    <string name="title_website">Website</string>
+    <string name="title_more">More</string>
+
+    <string name="kilometres">km</string>
+    <string name="metres">m</string>
+</resources>

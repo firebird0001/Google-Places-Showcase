@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="details_image_height">280dp</dimen>
+    <dimen name="grid_image_padding">20dp</dimen>
+    <dimen name="grid_item_height">80dp</dimen>
+    <dimen name="text_size_normal">14sp</dimen>
+    <dimen name="padding_size">5dp</dimen>
+    <dimen name="pager_indicator_height">30dp</dimen>
+</resources>
