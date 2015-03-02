@@ -7,8 +7,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.places.showcase.event.ApiErrorEvent;
-import com.google.places.showcase.provider.LocationProvider;
 import com.google.places.showcase.provider.DataProvider;
+import com.google.places.showcase.provider.LocationProvider;
 import com.google.places.showcase.provider.PlacesProvider;
 import com.google.places.showcase.utils.BusProvider;
 import com.squareup.okhttp.Cache;
@@ -33,7 +33,7 @@ public class PlacesApplication extends Application {
 
     private static final int HTTP_CACHE_SIZE = 4 * 1024;
 
-    private PlacesProvider mPlacesService;
+    private PlacesProvider mPlacesProvider;
     private LocationProvider mLocationProvider;
 
     @Override
@@ -42,8 +42,8 @@ public class PlacesApplication extends Application {
 
         BusProvider.getInstance().register(this);
 
-        mPlacesService = new PlacesProvider(buildProvider());
-        BusProvider.getInstance().register(mPlacesService);
+        mPlacesProvider = new PlacesProvider(buildProvider());
+        BusProvider.getInstance().register(mPlacesProvider);
 
         mLocationProvider = LocationProvider.init(this);
         BusProvider.getInstance().register(mLocationProvider);
@@ -72,6 +72,16 @@ public class PlacesApplication extends Application {
                 .build();
 
         return restAdapter.create(DataProvider.class);
+    }
+
+    /** Visible for test purposes */
+    public PlacesProvider getPlacesProvider() {
+        return mPlacesProvider;
+    }
+
+    /** Visible for test purposes */
+    public LocationProvider getLocationProvider() {
+        return mLocationProvider;
     }
 
     @Subscribe

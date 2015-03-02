@@ -78,15 +78,18 @@ public class PlacesProvider {
         mPendingCallbacks.put(LoadRequestType.PLACE_LIST, callback);
     }
 
-    /**
-     * Check if similar requests are already posted and cancel them
-     */
+    /** Check if similar requests are already posted and cancel them */
     private void cancelSameRequests(LoadRequest request) {
         CancellableJsonCallback callback = mPendingCallbacks.get(request.getType());
         if (callback != null) {
             callback.cancel();
             mPendingCallbacks.remove(request.getType());
         }
+    }
+
+    /** Get all pending requests, currently used for tests only */
+    public Map<LoadRequestType, CancellableJsonCallback> getPendingRequests() {
+        return mPendingCallbacks;
     }
 
     private static class PlacesCallback extends CancellableJsonCallback {

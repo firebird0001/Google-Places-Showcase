@@ -9,19 +9,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.google.places.showcase.R;
 import com.google.places.showcase.activity.PlaceDetailsActivity;
 import com.google.places.showcase.adapter.PlacesGridAdapter;
-import com.google.places.showcase.R;
+import com.google.places.showcase.entity.Place;
 import com.google.places.showcase.event.ApiErrorEvent;
 import com.google.places.showcase.event.PlacesLoadRequest;
 import com.google.places.showcase.event.PlacesLoadResponse;
-import com.google.places.showcase.entity.Place;
 import com.google.places.showcase.provider.LocationProvider;
 import com.google.places.showcase.utils.BusProvider;
 import com.google.places.showcase.utils.CommonUtil;
 import com.squareup.otto.Subscribe;
-
-import java.util.List;
 
 /**
  * Fragment used to display a grid of place items.

@@ -18,11 +18,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.places.showcase.R;
+import com.google.places.showcase.entity.Place;
+import com.google.places.showcase.entity.PlacePhoto;
 import com.google.places.showcase.event.ApiErrorEvent;
 import com.google.places.showcase.event.PlaceDetailsLoadRequest;
 import com.google.places.showcase.event.PlaceDetailsLoadResponse;
-import com.google.places.showcase.entity.Place;
-import com.google.places.showcase.entity.PlacePhoto;
 import com.google.places.showcase.utils.BusProvider;
 import com.google.places.showcase.utils.CommonUtil;
 import com.squareup.otto.Subscribe;

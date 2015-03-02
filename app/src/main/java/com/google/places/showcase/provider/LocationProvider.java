@@ -9,9 +9,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.places.showcase.R;
+import com.google.places.showcase.entity.Place;
 import com.google.places.showcase.event.LocationUpdateRequest;
 import com.google.places.showcase.event.LocationUpdateResponse;
-import com.google.places.showcase.entity.Place;
 import com.google.places.showcase.utils.BusProvider;
 import com.squareup.otto.Subscribe;
 

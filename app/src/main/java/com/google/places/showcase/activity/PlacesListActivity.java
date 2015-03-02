@@ -18,10 +18,10 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.places.showcase.R;
+import com.google.places.showcase.entity.PlaceLocation;
 import com.google.places.showcase.event.LocationUpdateRequest;
 import com.google.places.showcase.event.LocationUpdateResponse;
 import com.google.places.showcase.event.PlacesLoadRequest;
-import com.google.places.showcase.entity.PlaceLocation;
 import com.google.places.showcase.provider.LocationProvider;
 import com.google.places.showcase.search.SearchSuggestionProvider;
 import com.google.places.showcase.utils.BusProvider;

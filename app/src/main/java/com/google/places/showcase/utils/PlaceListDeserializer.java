@@ -4,8 +4,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.places.showcase.event.PlacesLoadResponse;
 import com.google.places.showcase.entity.Place;
+import com.google.places.showcase.event.PlacesLoadResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
