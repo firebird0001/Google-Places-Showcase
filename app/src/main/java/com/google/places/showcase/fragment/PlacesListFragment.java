@@ -63,6 +63,7 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
         super.onStop();
 
         BusProvider.getInstance().unregister(this);
+        CommonUtil.hideProgressDialog(getFragmentManager());
     }
 
     @Subscribe

@@ -94,6 +94,7 @@ public class PlaceDetailsFragment extends Fragment implements Button.OnClickList
         super.onStop();
 
         BusProvider.getInstance().unregister(this);
+        CommonUtil.hideProgressDialog(getFragmentManager());
     }
 
     @Subscribe

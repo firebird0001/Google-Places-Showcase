@@ -57,7 +57,7 @@ public final class CommonUtil {
         ProgressDialogFragment progressDialog = (ProgressDialogFragment) fragmentManager
                 .findFragmentByTag(TAG_PROGRESS_DIALOG);
         if (progressDialog != null) {
-            progressDialog.dismiss();
+            progressDialog.dismissAllowingStateLoss();
         }
     }
 
