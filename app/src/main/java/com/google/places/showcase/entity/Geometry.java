@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Geometry {
     @SerializedName("location")
-    Location location;
+    PlaceLocation location;
 }

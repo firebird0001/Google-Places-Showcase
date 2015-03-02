@@ -16,9 +16,12 @@ import com.google.places.showcase.event.ApiErrorEvent;
 import com.google.places.showcase.event.PlacesLoadRequest;
 import com.google.places.showcase.event.PlacesLoadResponse;
 import com.google.places.showcase.entity.Place;
+import com.google.places.showcase.provider.LocationProvider;
 import com.google.places.showcase.utils.BusProvider;
 import com.google.places.showcase.utils.CommonUtil;
 import com.squareup.otto.Subscribe;
+
+import java.util.List;
 
 /**
  * Fragment used to display a grid of place items.
@@ -74,6 +77,8 @@ public class PlacesListFragment extends Fragment implements AdapterView.OnItemCl
     @Subscribe
     public void onPlacesLoaded(PlacesLoadResponse response) {
         if (!response.isBadResponse()) {
+            CommonUtil.sortNearestFirst(response.getPlaces(),
+                    LocationProvider.getInstance().getLastLocation());
             mGridAdapter.updateData(response.getPlaces());
         } else {
             CommonUtil.reportBadResponse(this.getActivity(), response);

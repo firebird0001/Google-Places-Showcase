@@ -48,14 +48,14 @@ public class PlacesProvider {
         // place new request
         PlacesCallback callback = new PlacesCallback(PlacesLoadResponse.class, new PlaceListDeserializer());
         if (request.getQuery() != null) {
-            mApi.getPlacesWithText(CommonUtil.API_KEY, request.getQuery(), callback);
+            if (request.getLocation() != null) {
+                mApi.getPlacesWithTextAndLocation(CommonUtil.API_KEY, request.getQuery(),
+                        request.getLocation().toString(), callback);
+            } else {
+                mApi.getPlacesWithText(CommonUtil.API_KEY, request.getQuery(), callback);
+            }
         } else if (request.getLocation() != null) {
-            String location = new StringBuilder("")
-                    .append(request.getLocation().getLatitude())
-                    .append(',')
-                    .append(request.getLocation().getLongitude())
-                    .toString();
-            mApi.getNearbyPlaces(CommonUtil.API_KEY, location, callback);
+            mApi.getNearbyPlaces(CommonUtil.API_KEY, request.getLocation().toString(), callback);
         } else {
             throw new IllegalArgumentException("No params specified in load places query");
         }

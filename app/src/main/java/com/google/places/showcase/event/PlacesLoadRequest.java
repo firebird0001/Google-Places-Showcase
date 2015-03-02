@@ -1,21 +1,17 @@
 package com.google.places.showcase.event;
 
-import com.google.places.showcase.entity.Location;
+import com.google.places.showcase.entity.PlaceLocation;
 
 /**
  * Place list load request. Can contain text query and/or location.
  */
 public class PlacesLoadRequest extends LoadRequest {
     public String mQuery;
-    public Location mLocation;
+    public PlaceLocation mLocation;
 
-    public PlacesLoadRequest(String query) {
+    public PlacesLoadRequest(String query, PlaceLocation location) {
         super(LoadRequestType.PLACE_LIST);
         mQuery = query;
-    }
-
-    public PlacesLoadRequest(Location location) {
-        super(LoadRequestType.PLACE_LIST);
         mLocation = location;
     }
 
@@ -23,7 +19,7 @@ public class PlacesLoadRequest extends LoadRequest {
         return mQuery;
     }
 
-    public Location getLocation() {
+    public PlaceLocation getLocation() {
         return mLocation;
     }
 }

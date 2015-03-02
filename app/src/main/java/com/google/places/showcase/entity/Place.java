@@ -134,11 +134,11 @@ public class Place {
         this.types = types;
     }
 
-    public Location getLocation() {
+    public PlaceLocation getLocation() {
         return geometry.location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(PlaceLocation location) {
         if (this.geometry == null) {
             this.geometry = new Geometry();
         }

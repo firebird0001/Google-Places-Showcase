@@ -24,6 +24,14 @@ public interface DataProvider {
             Callback<JsonElement> places
     );
 
+    @GET("/textsearch/json?radius=10000")
+    void getPlacesWithTextAndLocation(
+            @Query("key") String apiKey,
+            @Query("query") String query,
+            @Query("location") String location,
+            Callback<JsonElement> places
+    );
+
     @GET("/details/json")
     void getPlaceDetails(
             @Query("key") String apiKey,

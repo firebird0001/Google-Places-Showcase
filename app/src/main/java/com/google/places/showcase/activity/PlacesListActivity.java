@@ -3,6 +3,7 @@ package com.google.places.showcase.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.view.MenuItemCompat;
@@ -20,7 +21,7 @@ import com.google.places.showcase.R;
 import com.google.places.showcase.event.LocationUpdateRequest;
 import com.google.places.showcase.event.LocationUpdateResponse;
 import com.google.places.showcase.event.PlacesLoadRequest;
-import com.google.places.showcase.entity.Location;
+import com.google.places.showcase.entity.PlaceLocation;
 import com.google.places.showcase.provider.LocationProvider;
 import com.google.places.showcase.search.SearchSuggestionProvider;
 import com.google.places.showcase.utils.BusProvider;
@@ -71,7 +72,12 @@ public class PlacesListActivity extends ActionBarActivity implements SearchView.
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (!TextUtils.isEmpty(query)) {
                 // start new request
-                performSearch(query, null);
+                Location lastKnownLocation = LocationProvider.getInstance().getLastLocation();
+                if (lastKnownLocation != null) {
+                    performSearch(query, new PlaceLocation(lastKnownLocation));
+                } else {
+                    performSearch(query, null);
+                }
 
                 // update search view in case search history entry was selected
                 mSearchView.setQuery(query, false);
@@ -120,9 +126,9 @@ public class PlacesListActivity extends ActionBarActivity implements SearchView.
                 item.expandActionView();
                 return true;
             case R.id.action_nearby:
-                android.location.Location location = LocationProvider.getInstance().getLastLocation();
+                Location location = LocationProvider.getInstance().getLastLocation();
                 if (location != null) {
-                    performSearch(null, new com.google.places.showcase.entity.Location(location));
+                    performSearch(null, new PlaceLocation(location));
                 } else {
                     Toast.makeText(this, getString(R.string.location_not_available),
                             Toast.LENGTH_LONG).show();
@@ -141,7 +147,9 @@ public class PlacesListActivity extends ActionBarActivity implements SearchView.
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putCharSequence(KEY_QUERY, mSearchView.getQuery());
+        if (mSearchView != null) {
+            outState.putCharSequence(KEY_QUERY, mSearchView.getQuery());
+        }
         outState.putBoolean(KEY_FIRST_SEARCH, mFirstSearchDone);
         outState.putBoolean(KEY_SEARCH_OPEN, mSearchOpen);
     }
@@ -169,14 +177,13 @@ public class PlacesListActivity extends ActionBarActivity implements SearchView.
         // if no text query is entered - show nearby places
         if (!mFirstSearchDone) {
             performSearch(null,
-                    new com.google.places.showcase.entity.Location(event.getLocation()));
+                    new PlaceLocation(event.getLocation()));
         }
     }
 
-    private void performSearch(String query, Location location) {
+    private void performSearch(String query, PlaceLocation location) {
         // support only separate requests for now
-        PlacesLoadRequest loadRequest = (query != null)
-                ? new PlacesLoadRequest(query) : new PlacesLoadRequest(location);
+        PlacesLoadRequest loadRequest = new PlacesLoadRequest(query, location);
         BusProvider.getInstance().post(loadRequest);
         mFirstSearchDone = true;
     }
