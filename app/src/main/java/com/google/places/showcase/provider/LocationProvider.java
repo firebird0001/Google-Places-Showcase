@@ -78,8 +78,8 @@ public class LocationProvider implements GoogleApiClient.ConnectionCallbacks,
      * @return formatted string with distance
      */
     public String distanceToPlace(Place targetPlace) {
-        if (mLastLocation == null) {
-            // current location not available
+        if (mLastLocation == null || targetPlace.getLocation() == null) {
+            // current or target location not available
             return "";
         }
 

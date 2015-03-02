@@ -151,6 +151,10 @@ public final class CommonUtil {
         Collections.sort(placeList, new Comparator<Place>() {
             @Override
             public int compare(Place first, Place second) {
+                if (first.getLocation() == null || second.getLocation() == null) {
+                    return 0;
+                }
+
                 // calculate distance from first place
                 tempLocation.setLatitude(first.getLocation().getLatitude());
                 tempLocation.setLongitude(first.getLocation().getLongitude());

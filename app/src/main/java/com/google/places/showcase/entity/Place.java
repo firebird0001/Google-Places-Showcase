@@ -135,7 +135,10 @@ public class Place {
     }
 
     public PlaceLocation getLocation() {
-        return geometry.location;
+        if (geometry != null) {
+            return geometry.location;
+        }
+        return null;
     }
 
     public void setLocation(PlaceLocation location) {
