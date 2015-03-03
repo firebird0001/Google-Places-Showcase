@@ -23,6 +23,7 @@ import com.google.places.showcase.event.LocationUpdateRequest;
 import com.google.places.showcase.event.LocationUpdateResponse;
 import com.google.places.showcase.event.PlacesLoadRequest;
 import com.google.places.showcase.provider.LocationProvider;
+import com.google.places.showcase.provider.PlacesProvider;
 import com.google.places.showcase.search.SearchSuggestionProvider;
 import com.google.places.showcase.utils.BusProvider;
 import com.squareup.otto.Subscribe;
@@ -154,7 +155,6 @@ public class PlacesListActivity extends ActionBarActivity implements SearchView.
         outState.putBoolean(KEY_SEARCH_OPEN, mSearchOpen);
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -182,9 +182,11 @@ public class PlacesListActivity extends ActionBarActivity implements SearchView.
     }
 
     private void performSearch(String query, PlaceLocation location) {
-        // support only separate requests for now
         PlacesLoadRequest loadRequest = new PlacesLoadRequest(query, location);
+        // inform other components that load has started
         BusProvider.getInstance().post(loadRequest);
+        // start load
+        PlacesProvider.getInstance().loadPlaces(loadRequest);
         mFirstSearchDone = true;
     }
 

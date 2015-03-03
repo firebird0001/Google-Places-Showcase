@@ -29,9 +29,6 @@ import retrofit.converter.GsonConverter;
 public class PlacesApplication extends Application {
 
     private static final String TAG = "PlacesApplication";
-    private static final String API_URL = "https://maps.googleapis.com/maps/api/place";
-
-    private static final int HTTP_CACHE_SIZE = 4 * 1024;
 
     private PlacesProvider mPlacesProvider;
     private LocationProvider mLocationProvider;
@@ -42,36 +39,10 @@ public class PlacesApplication extends Application {
 
         BusProvider.getInstance().register(this);
 
-        mPlacesProvider = new PlacesProvider(buildProvider());
-        BusProvider.getInstance().register(mPlacesProvider);
+        mPlacesProvider = PlacesProvider.init(this);
 
         mLocationProvider = LocationProvider.init(this);
         BusProvider.getInstance().register(mLocationProvider);
-    }
-
-    private DataProvider buildProvider() {
-        // create an HTTP client that uses a cache on the file system.
-        OkHttpClient okHttpClient = new OkHttpClient();
-        File cacheDir = new File(getCacheDir(), UUID.randomUUID().toString());
-        Cache cache = null;
-        try {
-            cache = new Cache(cacheDir, HTTP_CACHE_SIZE);
-        } catch (IOException e) {
-            Log.e(TAG, "Error creating HTTP cache", e);
-        }
-        if (cache != null) {
-            okHttpClient.setCache(cache);
-        }
-
-        // create rest adapter
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setClient(new OkClient(okHttpClient))
-                .setEndpoint(API_URL)
-                .setConverter(new GsonConverter(new Gson()))
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-
-        return restAdapter.create(DataProvider.class);
     }
 
     /** Visible for test purposes */

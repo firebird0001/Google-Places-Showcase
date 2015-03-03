@@ -1,11 +1,11 @@
 package com.google.places.showcase.provider;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
-import com.google.places.showcase.event.ApiErrorEvent;
+import com.google.places.showcase.BuildConfig;
 import com.google.places.showcase.event.LoadRequest;
 import com.google.places.showcase.event.LoadRequestType;
 import com.google.places.showcase.event.PlaceDetailsLoadRequest;
@@ -17,36 +17,77 @@ import com.google.places.showcase.utils.CancellableJsonCallback;
 import com.google.places.showcase.utils.CommonUtil;
 import com.google.places.showcase.utils.PlaceDetailsDeserializer;
 import com.google.places.showcase.utils.PlaceListDeserializer;
-import com.squareup.otto.Subscribe;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 import retrofit.client.Response;
+import retrofit.converter.GsonConverter;
 
 /**
  * Default provider to use with Google Places API
  */
 public class PlacesProvider {
     private static final String TAG = "PlacesService";
+    private static final String API_URL = "https://maps.googleapis.com/maps/api/place";
+    private static final String HTTP_CACHE_DIR = "http_cache";
+    private static final int HTTP_CACHE_SIZE = 4 * 1024;
 
+    private static PlacesProvider INSTANCE;
     private DataProvider mApi;
     // store all pending callbacks so we can ignore their results
     // if new similar request will be posted
     private Map<LoadRequestType, CancellableJsonCallback> mPendingCallbacks;
 
-    public PlacesProvider(DataProvider api) {
+    private PlacesProvider(DataProvider api) {
         mApi = api;
         mPendingCallbacks = new HashMap<LoadRequestType, CancellableJsonCallback>();
     }
 
-    @Subscribe
-    public void onLoadPlaces(PlacesLoadRequest request) {
+    /**
+     * Use this method to initialize location provider before use
+     * @param context any context
+     * @return {@link com.google.places.showcase.provider.PlacesProvider} instance
+     */
+    public static PlacesProvider init(Context context) {
+        INSTANCE = new PlacesProvider(buildProvider(context));
+        return INSTANCE;
+    }
+
+    /**
+     * Use this method to initialize location provider before use
+     * @param api retrofit interface
+     * @return {@link com.google.places.showcase.provider.PlacesProvider} instance
+     */
+    public static PlacesProvider init(DataProvider api) {
+        INSTANCE = new PlacesProvider(api);
+        return INSTANCE;
+    }
+
+    /**
+     * Get default location provider. Should be initialized before use with
+     * {@link com.google.places.showcase.provider.PlacesProvider#init(Context)}
+     * @return singleton instance
+     */
+    public static PlacesProvider getInstance() {
+        if (INSTANCE == null) {
+            throw new IllegalStateException("Places provider should be initialized before use");
+        }
+        return INSTANCE;
+    }
+
+    public void loadPlaces(PlacesLoadRequest request) {
         // cancel already submitted request callback
-        cancelSameRequests(request);
+        cancelSimilarRequests(request);
 
         // place new request
-        PlacesCallback callback = new PlacesCallback(PlacesLoadResponse.class, new PlaceListDeserializer());
+        PlacesCallback callback = new PlacesCallback<PlacesLoadResponse>();
         if (request.getQuery() != null) {
             if (request.getLocation() != null) {
                 mApi.getPlacesWithTextAndLocation(CommonUtil.API_KEY, request.getQuery(),
@@ -64,14 +105,12 @@ public class PlacesProvider {
         mPendingCallbacks.put(LoadRequestType.PLACE_LIST, callback);
     }
 
-    @Subscribe
-    public void onLoadPlaceDetails(PlaceDetailsLoadRequest request) {
+    public void loadPlaceDetails(PlaceDetailsLoadRequest request) {
         // cancel already submitted request callback
-        cancelSameRequests(request);
+        cancelSimilarRequests(request);
 
         // place new request
-        PlacesCallback callback = new PlacesCallback(PlaceDetailsLoadResponse.class,
-                new PlaceDetailsDeserializer());
+        PlacesCallback callback = new PlacesCallback<PlaceDetailsLoadResponse>();
         mApi.getPlaceDetails(CommonUtil.API_KEY, request.getPlaceId(), callback);
 
         // save callback
@@ -79,7 +118,7 @@ public class PlacesProvider {
     }
 
     /** Check if similar requests are already posted and cancel them */
-    private void cancelSameRequests(LoadRequest request) {
+    private void cancelSimilarRequests(LoadRequest request) {
         CancellableJsonCallback callback = mPendingCallbacks.get(request.getType());
         if (callback != null) {
             callback.cancel();
@@ -92,31 +131,48 @@ public class PlacesProvider {
         return mPendingCallbacks;
     }
 
-    private static class PlacesCallback extends CancellableJsonCallback {
+    private static class PlacesCallback<T> extends CancellableJsonCallback<T> {
 
-        private Class mResponseClass;
-        private JsonDeserializer mDeserializer;
-
-        PlacesCallback(Class responseClass, JsonDeserializer deserializer) {
-            mResponseClass = responseClass;
-            mDeserializer = deserializer;
+        PlacesCallback() {
         }
 
         @Override
-        public void success(JsonElement response, Response rawResponse) {
+        public void success(T response, Response rawResponse) {
             if (isCancelled()) {
                 return;
             }
-
-            Gson gson = new GsonBuilder()
-                    .registerTypeAdapter(mResponseClass, mDeserializer)
-                    .create();
-
-            try {
-                BusProvider.getInstance().post(gson.fromJson(response, mResponseClass));
-            } catch (JsonSyntaxException syntaxException) {
-                BusProvider.getInstance().post(new ApiErrorEvent(syntaxException));
-            }
+            BusProvider.getInstance().post(response);
         }
+    }
+
+    private static DataProvider buildProvider(Context context) {
+        // create an HTTP client that uses a cache on the file system.
+        OkHttpClient okHttpClient = new OkHttpClient();
+        File cacheDir = new File(context.getCacheDir(), HTTP_CACHE_DIR);
+        Cache cache = null;
+        try {
+            cache = new Cache(cacheDir, HTTP_CACHE_SIZE);
+        } catch (IOException e) {
+            Log.e(TAG, "Error creating HTTP cache", e);
+        }
+        if (cache != null) {
+            okHttpClient.setCache(cache);
+        }
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(PlaceDetailsLoadResponse.class, new PlaceDetailsDeserializer())
+                .registerTypeAdapter(PlacesLoadResponse.class, new PlaceListDeserializer())
+                .create();
+
+        // create rest adapter
+        RestAdapter restAdapter = new RestAdapter.Builder()
+                .setClient(new OkClient(okHttpClient))
+                .setEndpoint(API_URL)
+                .setConverter(new GsonConverter(gson))
+                .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL
+                        : RestAdapter.LogLevel.BASIC)
+                .build();
+
+        return restAdapter.create(DataProvider.class);
     }
 }

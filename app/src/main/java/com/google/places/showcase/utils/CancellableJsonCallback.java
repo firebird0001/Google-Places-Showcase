@@ -9,7 +9,7 @@ import retrofit.RetrofitError;
 /**
  * Retrofit extension to be able to cancel posted callbacks
  */
-public abstract class CancellableJsonCallback implements Callback<JsonElement> {
+public abstract class CancellableJsonCallback<T> implements Callback<T> {
     private volatile boolean mCancelled;
 
     public void cancel() {

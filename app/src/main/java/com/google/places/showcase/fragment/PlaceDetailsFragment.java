@@ -23,6 +23,7 @@ import com.google.places.showcase.entity.PlacePhoto;
 import com.google.places.showcase.event.ApiErrorEvent;
 import com.google.places.showcase.event.PlaceDetailsLoadRequest;
 import com.google.places.showcase.event.PlaceDetailsLoadResponse;
+import com.google.places.showcase.provider.PlacesProvider;
 import com.google.places.showcase.utils.BusProvider;
 import com.google.places.showcase.utils.CommonUtil;
 import com.squareup.otto.Subscribe;
@@ -82,11 +83,16 @@ public class PlaceDetailsFragment extends Fragment implements Button.OnClickList
             // need to load place information
             String placeId = getArguments().getString(CommonUtil.KEY_PLACE_ID);
             if (placeId != null) {
-                BusProvider.getInstance().post(new PlaceDetailsLoadRequest(placeId));
+                loadPlaceDetails(new PlaceDetailsLoadRequest(placeId));
             } else {
                 throw new IllegalArgumentException("Place identifier not specified");
             }
         }
+    }
+
+    private void loadPlaceDetails(PlaceDetailsLoadRequest request) {
+        PlacesProvider.getInstance().loadPlaceDetails(request);
+        CommonUtil.showProgressDialog(getFragmentManager());
     }
 
     @Override
@@ -95,11 +101,6 @@ public class PlaceDetailsFragment extends Fragment implements Button.OnClickList
 
         BusProvider.getInstance().unregister(this);
         CommonUtil.hideProgressDialog(getFragmentManager());
-    }
-
-    @Subscribe
-    public void onLoadPlaceDetails(PlaceDetailsLoadRequest request) {
-        CommonUtil.showProgressDialog(getFragmentManager());
     }
 
     @Subscribe

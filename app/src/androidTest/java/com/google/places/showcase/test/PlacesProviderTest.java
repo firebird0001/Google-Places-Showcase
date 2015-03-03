@@ -27,27 +27,27 @@ public class PlacesProviderTest extends TestCase {
                 .setClient(new MockClient())
                 .setEndpoint(TEST_URL)
                 .build();
-        PlacesProvider placesProvider = new PlacesProvider(restAdapter.create(DataProvider.class));
+        PlacesProvider placesProvider = PlacesProvider.init(restAdapter.create(DataProvider.class));
 
         // send some requests and check cancellation status
         PlacesLoadRequest request1 = new PlacesLoadRequest(TEST_QUERY1, null);
         PlacesLoadRequest request2 = new PlacesLoadRequest(TEST_QUERY2, null);
         PlacesLoadRequest request3 = new PlacesLoadRequest(TEST_QUERY2, null);
 
-        placesProvider.onLoadPlaces(request1);
+        placesProvider.loadPlaces(request1);
         CancellableJsonCallback callback1 = placesProvider.getPendingRequests()
                 .get(LoadRequestType.PLACE_LIST);
         assertNotNull(callback1);
         assertFalse(callback1.isCancelled());
 
-        placesProvider.onLoadPlaces(request2);
+        placesProvider.loadPlaces(request2);
         CancellableJsonCallback callback2 = placesProvider.getPendingRequests()
                 .get(LoadRequestType.PLACE_LIST);
         assertNotNull(callback2);
         assertTrue(callback1.isCancelled());
         assertFalse(callback2.isCancelled());
 
-        placesProvider.onLoadPlaces(request3);
+        placesProvider.loadPlaces(request3);
         CancellableJsonCallback callback3 = placesProvider.getPendingRequests()
                 .get(LoadRequestType.PLACE_LIST);
         assertNotNull(callback3);

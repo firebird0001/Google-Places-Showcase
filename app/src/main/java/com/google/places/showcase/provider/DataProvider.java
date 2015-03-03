@@ -1,6 +1,7 @@
 package com.google.places.showcase.provider;
 
-import com.google.gson.JsonElement;
+import com.google.places.showcase.event.PlaceDetailsLoadResponse;
+import com.google.places.showcase.event.PlacesLoadResponse;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -14,14 +15,14 @@ public interface DataProvider {
     void getNearbyPlaces(
             @Query("key") String apiKey,
             @Query("location") String location,
-            Callback<JsonElement> places
+            Callback<PlacesLoadResponse> places
     );
 
     @GET("/textsearch/json")
     void getPlacesWithText(
             @Query("key") String apiKey,
             @Query("query") String query,
-            Callback<JsonElement> places
+            Callback<PlacesLoadResponse> places
     );
 
     @GET("/textsearch/json?radius=10000")
@@ -29,13 +30,13 @@ public interface DataProvider {
             @Query("key") String apiKey,
             @Query("query") String query,
             @Query("location") String location,
-            Callback<JsonElement> places
+            Callback<PlacesLoadResponse> places
     );
 
     @GET("/details/json")
     void getPlaceDetails(
             @Query("key") String apiKey,
             @Query("placeid") String placeId,
-            Callback<JsonElement> placesDetails
+            Callback<PlaceDetailsLoadResponse> placesDetails
     );
 }
